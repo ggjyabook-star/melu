@@ -251,9 +251,45 @@ function getCurrentLocationGPS() {
                 map.setView(newLatLng, 16);
             }
         }, function (error) {
-            console.warn("Error getting geolocation:", error);
+            console.warn("Error getting geolocation, trying IP fallback...", error);
+            fallbackIPLocation();
         });
+    } else {
+        console.warn("Geolocation not supported, trying IP fallback...");
+        fallbackIPLocation();
     }
+}
+
+function fallbackIPLocation() {
+    fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.latitude && data.longitude) {
+                const lat = data.latitude;
+                const lng = data.longitude;
+                document.getElementById('lat-input').value = lat.toFixed(6);
+                document.getElementById('lng-input').value = lng.toFixed(6);
+                
+                if (map && marker) {
+                    const newLatLng = new L.LatLng(lat, lng);
+                    marker.setLatLng(newLatLng);
+                    map.setView(newLatLng, 14);
+                }
+            }
+        })
+        .catch(err => {
+            console.error("IP Geolocation failed:", err);
+            // Default to Mexico City center if everything fails
+            const defaultLat = 19.4326;
+            const defaultLng = -99.1332;
+            document.getElementById('lat-input').value = defaultLat;
+            document.getElementById('lng-input').value = defaultLng;
+            if (map && marker) {
+                const newLatLng = new L.LatLng(defaultLat, defaultLng);
+                marker.setLatLng(newLatLng);
+                map.setView(newLatLng, 13);
+            }
+        });
 }
 
 function openOrderModal() {
