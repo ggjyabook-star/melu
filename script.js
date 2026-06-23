@@ -295,16 +295,6 @@ function fallbackIPLocation() {
 function openOrderModal() {
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
-    
-    // Initialize map on first open after a small delay so DOM is ready
-    setTimeout(() => {
-        if (!map) {
-            initMap();
-        } else {
-            map.invalidateSize();
-            getCurrentLocationGPS();
-        }
-    }, 300);
 }
 
 function closeOrderModal() {
@@ -313,6 +303,28 @@ function closeOrderModal() {
     cart = [];
     updateCartUI();
     resetModalInputs();
+    goToStep1();
+}
+
+function goToStep2() {
+    if (cart.length === 0) return alert('Por favor, añade productos a tu carrito antes de continuar.');
+    document.getElementById('modal-step-1').style.display = 'none';
+    document.getElementById('modal-step-2').style.display = 'block';
+    
+    // Initialize or refresh Leaflet map
+    setTimeout(() => {
+        if (!map) {
+            initMap();
+        } else {
+            map.invalidateSize();
+            getCurrentLocationGPS();
+        }
+    }, 100);
+}
+
+function goToStep1() {
+    document.getElementById('modal-step-2').style.display = 'none';
+    document.getElementById('modal-step-1').style.display = 'block';
 }
 
 function resetModalInputs() {

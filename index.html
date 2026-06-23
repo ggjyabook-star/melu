@@ -114,87 +114,101 @@
             <button class="close-btn" onclick="closeOrderModal()" aria-label="Cerrar">&times;</button>
             <div class="modal-scroll-wrapper">
                 <div class="modal-content-clean">
-                    <div class="modal-header-clean">
-                        <h2 class="modal-title">Crea tu pedido</h2>
-                        <p class="modal-subtitle">Arma tu combinación ideal en segundos.</p>
-                    </div>
-                    
-                    <!-- 1. Selection Fields -->
-                    <div class="order-builder-clean">
-                        <div class="builder-row">
-                            <div class="input-field-clean">
-                                <label>1. Categoría</label>
-                                <select id="cat-select" onchange="updateProductOptions()">
-                                    <option value="" disabled selected>Elige categoría...</option>
-                                    <option value="frutas">🍓 Frutas con Crema</option>
-                                    <option value="especiales">🍰 Especiales Dulces</option>
-                                    <option value="snacks">🍗 Snacks & Salados</option>
-                                </select>
+                    <!-- Paso 1: Tienda / Selección de productos -->
+                    <div id="modal-step-1" class="modal-step-panel">
+                        <div class="modal-header-clean">
+                            <h2 class="modal-title">Crea tu pedido</h2>
+                            <p class="modal-subtitle">Paso 1 de 2: Selecciona tus antojos.</p>
+                        </div>
+                        
+                        <!-- Selection Fields -->
+                        <div class="order-builder-clean">
+                            <div class="builder-row">
+                                <div class="input-field-clean">
+                                    <label>1. Categoría</label>
+                                    <select id="cat-select" onchange="updateProductOptions()">
+                                        <option value="" disabled selected>Elige categoría...</option>
+                                        <option value="frutas">🍓 Frutas con Crema</option>
+                                        <option value="especiales">🍰 Especiales Dulces</option>
+                                        <option value="snacks">🍗 Snacks & Salados</option>
+                                    </select>
+                                </div>
+                                <div class="input-field-clean">
+                                    <label>2. Producto</label>
+                                    <select id="prod-select" disabled onchange="handleProductSelection()">
+                                        <option value="" disabled selected>Primero categoría</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="input-field-clean">
-                                <label>2. Producto</label>
-                                <select id="prod-select" disabled onchange="handleProductSelection()">
-                                    <option value="" disabled selected>Primero categoría</option>
-                                </select>
+
+                            <!-- Flavor Selection for Wings -->
+                            <div id="flavor-group" class="builder-subgroup" style="display: none;">
+                                <label>3. Selecciona la preparación:</label>
+                                <div class="option-add-grid">
+                                    <button class="btn-option-add" onclick="addWithFlavor('BBQ')">🍗 BBQ</button>
+                                    <button class="btn-option-add" onclick="addWithFlavor('Mango Habanero')">🔥 Mango Habanero</button>
+                                </div>
+                            </div>
+
+                            <!-- Size Selection for Fruits -->
+                            <div id="size-group" class="builder-subgroup" style="display: none;">
+                                <label>3. Selecciona el tamaño:</label>
+                                <div class="option-add-grid">
+                                    <button class="btn-option-add" onclick="addWithSize('Chico', 35)">Chico ($35)</button>
+                                    <button class="btn-option-add" onclick="addWithSize('Mediano', 50)">Mediano ($50)</button>
+                                    <button class="btn-option-add" onclick="addWithSize('Grande', 80)">Grande ($80)</button>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Flavor Selection for Wings -->
-                        <div id="flavor-group" class="builder-subgroup" style="display: none;">
-                            <label>3. Selecciona la preparación:</label>
-                            <div class="option-add-grid">
-                                <button class="btn-option-add" onclick="addWithFlavor('BBQ')">🍗 BBQ</button>
-                                <button class="btn-option-add" onclick="addWithFlavor('Mango Habanero')">🔥 Mango Habanero</button>
+                        <!-- Tu Pedido / Cart Summary -->
+                        <div class="cart-section-clean">
+                            <div class="summary-header-clean">
+                                <h3>Tu Pedido</h3>
+                                <button class="btn-clear-cart" onclick="clearCart()">Vaciar</button>
+                            </div>
+                            <div id="cart-items" class="cart-scroll-clean">
+                                <p class="empty-text">El carrito está vacío.</p>
+                            </div>
+                            <div class="total-clean">
+                                <span>Total:</span>
+                                <span id="cart-total-amount">$0.00</span>
                             </div>
                         </div>
 
-                        <!-- Size Selection for Fruits -->
-                        <div id="size-group" class="builder-subgroup" style="display: none;">
-                            <label>3. Selecciona el tamaño:</label>
-                            <div class="option-add-grid">
-                                <button class="btn-option-add" onclick="addWithSize('Chico', 35)">Chico ($35)</button>
-                                <button class="btn-option-add" onclick="addWithSize('Mediano', 50)">Mediano ($50)</button>
-                                <button class="btn-option-add" onclick="addWithSize('Grande', 80)">Grande ($80)</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 2. Tu Pedido / Cart Summary -->
-                    <div class="cart-section-clean">
-                        <div class="summary-header-clean">
-                            <h3>Tu Pedido</h3>
-                            <button class="btn-clear-cart" onclick="clearCart()">Vaciar</button>
-                        </div>
-                        <div id="cart-items" class="cart-scroll-clean">
-                            <p class="empty-text">El carrito está vacío.</p>
-                        </div>
-                        <div class="total-clean">
-                            <span>Total:</span>
-                            <span id="cart-total-amount">$0.00</span>
-                        </div>
-                    </div>
-
-                    <!-- 3. Customer Info -->
-                    <div class="customer-info-clean">
-                        <h3>Tus datos para el envío</h3>
-                        <div class="input-row-clean">
-                            <input type="text" id="name" placeholder="Tu nombre" required>
-                            <input type="tel" id="whatsapp-input" placeholder="Tu WhatsApp (10 dígitos)" required pattern="[0-9]{10}" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                        </div>
-                        <div class="map-section" style="margin-top: 1.5rem;">
-                            <label style="font-size: 0.95rem; font-weight: 700; color: var(--neon-blue); display: block; margin-bottom: 0.6rem; text-transform: uppercase;">📍 Ajusta tu ubicación en el mapa:</label>
-                            <div id="map" style="height: 200px; border-radius: 18px; border: 2px solid rgba(255, 255, 255, 0.08); z-index: 10;"></div>
-                            <input type="hidden" id="lat-input">
-                            <input type="hidden" id="lng-input">
-                            <button type="button" class="btn-option-add" onclick="getCurrentLocationGPS()" style="margin-top: 0.8rem; width: 100%; font-size: 0.9rem; padding: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                📡 Usar mi ubicación GPS actual
-                            </button>
+                        <div class="submit-section-clean">
+                            <button id="btn-next-step" class="btn btn-primary btn-block btn-lg" onclick="goToStep2()">Continuar al Envío 📍</button>
                         </div>
                     </div>
 
-                    <!-- 4. Submit Action -->
-                    <div class="submit-section-clean">
-                        <button class="btn btn-primary btn-block btn-lg" onclick="sendOrderWhatsApp()">Confirmar WhatsApp 📱</button>
+                    <!-- Paso 2: Datos de Envío y Ubicación en Mapa -->
+                    <div id="modal-step-2" class="modal-step-panel" style="display: none;">
+                        <div class="modal-header-clean">
+                            <h2 class="modal-title">Detalles de Entrega</h2>
+                            <p class="modal-subtitle">Paso 2 de 2: Indica tus datos y ubicación.</p>
+                        </div>
+
+                        <div class="customer-info-clean">
+                            <h3>Tus datos para el envío</h3>
+                            <div class="input-row-clean">
+                                <input type="text" id="name" placeholder="Tu nombre" required>
+                                <input type="tel" id="whatsapp-input" placeholder="Tu WhatsApp (10 dígitos)" required pattern="[0-9]{10}" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+                            <div class="map-section" style="margin-top: 1.5rem;">
+                                <label style="font-size: 0.95rem; font-weight: 700; color: var(--neon-blue); display: block; margin-bottom: 0.6rem; text-transform: uppercase;">📍 Ajusta tu ubicación en el mapa:</label>
+                                <div id="map" style="height: 200px; border-radius: 18px; border: 2px solid rgba(255, 255, 255, 0.08); z-index: 10;"></div>
+                                <input type="hidden" id="lat-input">
+                                <input type="hidden" id="lng-input">
+                                <button type="button" class="btn-option-add" onclick="getCurrentLocationGPS()" style="margin-top: 0.8rem; width: 100%; font-size: 0.9rem; padding: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    📡 Usar mi ubicación GPS actual
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="submit-section-clean" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
+                            <button class="btn btn-secondary btn-lg" onclick="goToStep1()" style="flex: 1; min-width: 120px; background: rgba(255,255,255,0.05); color: var(--text-white); border: 1px solid rgba(255,255,255,0.1);">⬅️ Volver</button>
+                            <button class="btn btn-primary btn-lg" onclick="sendOrderWhatsApp()" style="flex: 2; min-width: 180px; box-shadow: 0 0 25px rgba(0, 240, 255, 0.4); background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); padding: 1.25rem 2rem;">Confirmar WhatsApp 📱</button>
+                        </div>
                     </div>
                 </div>
             </div>
